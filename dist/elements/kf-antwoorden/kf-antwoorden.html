@@ -1,0 +1,84 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="kf-antwoorden">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .streep {
+        border-bottom: 1px solid lightgrey;
+      }
+
+      paper-material {
+        padding: 20px;
+      }
+    </style>
+    <paper-material elevation="0">
+    <div class="vertical  layout">
+    <template is="dom-repeat" items="{{antwoorden}}">
+    <div class="horizontal  layout streep">
+    <kf-player data="{{item.data.data}}" nickname="{{item.data.nickname}}" unixtime="{{item.data.datetime}}" key="" user=""></kf-player>
+  </div>
+     </template>
+    </div>
+  </paper-material>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'kf-antwoorden',
+
+      properties: {
+        key: {
+          type: String,
+          value: '',
+          notify: true,
+          observer: "_key"
+        }
+
+      },
+
+      _key: function(){
+        console.log("Antwoorden key changed: ", this.key);
+        var fb = new Firebase("https://dagboeka.firebaseio.com/vraag/"+this.key+"/antwoorden");
+        var self = this;
+        fb.on("value", function(snap){
+          console.log("FB antwoorden: ",snap.val());
+          // if(!snap.val()===null){
+            self.antwoorden = self.object2array(snap.val());
+            console.log(self.antwoorden);
+          // }
+        });
+      },
+
+      object2array: function(input){
+      var newarray = [];
+      var p = input;
+      for (var key in p) {
+        if (p.hasOwnProperty(key)) {
+          newarray.push({data: p[key], key: key});
+          //console.log(newarray);
+        }
+      };
+      return newarray.reverse();
+      console.log("object2array: ",newarray);
+    },
+
+    });
+  })();
+  </script>
+</dom-module>

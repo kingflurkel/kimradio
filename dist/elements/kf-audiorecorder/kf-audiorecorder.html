@@ -1,0 +1,339 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<script src="../../scripts/recordmp3.js"></script>
+<script src="../../bower_components/firebase/firebase.js"></script>
+  <script src="../../bower_components/node-uuid/uuid.js"></script>
+  <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/ipfs-upload/ipfs-upload.html">
+
+
+<dom-module id="kf-audiorecorder">
+  <template>
+
+    <style>
+      :host {
+        display: block;
+        width: 100%;
+      }
+
+      
+
+      paper-fab {
+        --paper-fab-background: var(--paper-grey-500);
+        margin-right: 20px;
+      }
+
+      .red {
+           background-color: var(--paper-red-500);
+      }
+
+      paper-input {
+        max-width: 200px;
+      }
+
+      h1 {
+        font-weight: lighter;
+        text-shadow: 0px 0px 5px #000; 
+      }
+
+
+    </style>
+
+    <iron-localstorage name="kim-id" value="{{userid}}"
+        on-iron-localstorage-load-empty="createuser"></iron-localstorage>
+    <iron-localstorage name="kim-nick" value="{{nickname}}"></iron-localstorage>
+    <ipfs-upload hidefileinput id="ipfsupload" host="/ip4/109.123.70.141/tcp/5001" hash="{{hashupl}}" ipfs="{{ipfs}}"></ipfs-upload>
+
+    <div class="horizontal layout center middle center">
+    <div>
+      <paper-fab toggles active="{{recording}}" id="recbutt" disabled="{{rec}}" icon="{{fabicon}}" class="big" title="heart"></paper-fab></div>
+      <div class="flex"> <h1>#<span>{{hashtag}}</span></h1></div>
+      <div> <iron-icon on-tap="_upload" icon="image:photo-size-select-actual"></iron-icon></div>
+    </div>
+
+
+       
+
+    
+  </template>
+  <script>
+  (function() {
+
+    Polymer({
+      is: 'kf-audiorecorder',
+
+      properties: {
+        tag: {
+          type: String,
+          notify: true,
+          observer: '_tag'
+        },
+        key: {
+          type: String,
+          value: 'none',
+          observer: '_keyChanged'
+        },
+        userid: {
+          type: String,
+          value: 'none'
+        },
+        rec: {
+          type: Boolean,
+          observer: "_rec"
+        },
+        recording: {
+          type: Boolean,
+          observer: "_recording",
+          value: false
+        },
+        hashtag: {
+          type: String,
+          observer: "_hashtag"
+        },
+        nickname: {
+          type: String,
+          value: 'anonymous'
+        },
+        hashimg: {
+          type: String,
+          observer: '_hashimg'
+        },
+        hashupl: {
+          type: String,
+          observer: '_hashupl'
+        }
+      },
+
+      _keyChanged: function() {
+        console.log("Changed key ", this.key);
+      },
+
+      _upload: function(){
+        this.$.ipfsupload._tap();
+      },
+
+      _hashtag: function(){
+        var fbhash = new Firebase("https://dagboeka.firebaseio.com/hashimages/" + this.hashtag + "/image");
+          fbhash.on("value", function(snap){
+          console.log("Found hash", snap.val());
+          var toolbar = document.getElementById('mainToolbar');
+          var bgurl = "url('http://gateway.ipfs.io/ipfs/" + snap.val().hash + "')";
+          console.log(bgurl);
+          toolbar.style.backgroundImage = bgurl;
+          //self.mijnvragen = self.object2array(snap.val());
+        });
+      },
+
+      _hashupl: function(){
+        console.log(this.hashupl);
+        var fbhashimg = new Firebase("https://dagboeka.firebaseio.com/hashimages/" + this.hashtag);
+        fbhashimg.set({'image': this.hashupl});
+      },
+
+      _rec: function(){
+        if(!this.ready){
+          this.$.recbutt.removeAttribute("disabled");
+        }
+      },
+
+      createuser: function(){
+        console.log("New user");
+        this.userid = uuid.v4();
+      },
+
+      test: function(){
+        console.log("button pressed");
+      },
+
+      _tag: function(){
+        if(this.tag=="antwoord"){
+        this.fabicon = "av:fiber-manual-record";
+      } else {
+        this.fabicon = "help";
+      }
+      },
+
+
+      ready: function() { 
+
+        
+
+        function __log(e, data) {
+          log.innerHTML += "\n" + e + " " + (data || '');
+        }
+
+
+        var self = this;
+
+        try {
+          // webkit shim
+          window.AudioContext = window.AudioContext || window.webkitAudioContext;
+          navigator.getUserMedia = (navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.msGetUserMedia);
+          window.URL = window.URL || window.webkitURL;
+
+          this.audio_context = new AudioContext;
+          __log('Audio context set up.');
+          __log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+        } catch (e) {
+          alert('No web audio support in this browser!');
+        }
+
+        navigator.getUserMedia({
+          audio: true
+        }, startUserMedia, function(e) {
+          __log('No live audio input: ' + e);
+        });
+
+
+        console.log("kent em em ?", this.tag);
+
+        function __log(e, data) {
+          console.log(e + " " + (data || ''));
+        }
+
+
+
+        function startUserMedia(stream) {
+
+          var input = self.audio_context.createMediaStreamSource(stream);
+          __log('Media stream created.');
+          __log("input sample rate " + input.context.sampleRate);
+
+          // Feedback!
+          //input.connect(audio_context.destination);
+          __log('Input connected to audio context destination.');
+
+          self.recorder = new Recorder(input, {
+            numChannels: 1
+          });
+
+          self.recorder.mp3encoded = function(mp3blob) {
+            console.log("BLOB!!!", mp3blob, self.tag);
+            // en hie gomme na firebase
+            if(self.tag=="antwoord"){
+              var location = "vraag/"+self.hashtag+"/antwoorden";
+            } 
+            if(self.tag=="original"){
+              var location = "vraag/";
+            };
+            var firebase = new Firebase("https://dagboeka.firebaseio.com/" + location);
+            //console.log(firebase);
+            self.newref = firebase.push({
+              data: mp3blob,
+              key: self.hashtag,
+              userid: self.userid,
+              datetime: Date.now(),
+              nickname: self.nickname
+            });
+
+        
+
+            var fbuser = new Firebase("https://dagboeka.firebaseio.com/user/" + self.userid + "/" + self.tag);
+            fbuser.push({
+              data: mp3blob,
+              key: self.newref.key(),
+              datetime: Date.now(),
+              nickname: self.nickname
+            }, function(e, f) {
+              console.log(e, f);
+            });
+
+            self.recorder.clear();
+
+          };
+          __log('Recorder initialised.');
+        }
+
+        this.startRecording = function _startRecording(button, tag) {
+          self.recorder && self.recorder.record();
+          //button.disabled = true;
+          //button.nextElementSibling.disabled = false;
+          __log('Recording...');
+        }
+
+        this.stopRecording = function _stopRecording(button) {
+          self.recorder && self.recorder.stop();
+          self.$.rec = true;
+          //button.previousElementSibling.disabled = false;
+          __log('Stopped recording.');
+          // create WAV download link using audio data blob
+          createDownloadLink();
+
+          //self.recorder.clear();
+        }
+
+        function createDownloadLink(tag) {
+          self.recorder && self.recorder.exportWAV(function(blob) {
+            var url = '';
+            var li = document.createElement('li');
+            var au = document.createElement('audio');
+            var hf = document.createElement('a');
+
+            au.controls = true;
+            au.src = url;
+            hf.href = url;
+            hf.download = new Date().toISOString() + '.wav';
+            hf.innerHTML = hf.download;
+            li.appendChild(au);
+            li.appendChild(hf);
+            //recordingslist.appendChild(li);
+
+          });
+        }
+
+        window.onload = function init() {
+
+        };
+      },
+
+      record: function() {
+        console.log("Record");
+        this.startRecording(this.$.recordbutton);
+        this.$.recbutt.toggleClass("red", true);
+      },
+
+      stoprec: function() {
+        console.log("Stop Record");
+        this.stopRecording(this.$.stoprecordbutton);
+        this.fire('rec-end');
+        this.$.recbutt.toggleClass("red", false);
+
+      },
+
+      _recording: function(){
+        if(this.startRecording&&this.stopRecording){
+        console.log("recording is ", this.recording);
+        if(this.recording){
+          this.record();
+          this.fabicon = "av:stop";
+          var toolbar = document.getElementById('mainToolbar');
+          toolbar.style.backgroundImage = "url('/images/recording.jpg')";
+        } else {
+          this.stoprec();
+          this.fabicon = "av:fiber-manual-record";
+          var toolbar = document.getElementById('mainToolbar');
+          toolbar.style.backgroundImage = "url('/images/kim.jpg')";
+        }
+      }
+      },
+
+    });
+  })();
+  </script>
+
+</dom-module>
