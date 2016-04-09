@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<script src="../../bower_components/moment/min/moment-with-locales.min.js"></script>
 
 <dom-module id="kf-player">
   <template>
@@ -17,6 +18,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         width: 100%;
         margin-bottom: 10px;
+        margin-top: 10px;
       }
 
       .rightmargin {
@@ -24,7 +26,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .nickname {
-        font-size: 20px;
+        font-size: 18px;
+        color: #333;
         text-transform: uppercase;
       }
 
@@ -45,9 +48,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <audio id="player2" src="{{data}}"></audio>
         <paper-fab on-tap="_play" class="" id="playbtn" icon="{{playericon}}"></paper-fab>
       </div>
-      <div class="vertical layout">
-        <div class="time"><span>{{unixtime}}</span></div>
+      <div class="vertical layout center-vertical ">
         <div class="nickname"><span>{{nickname}}</span></div>
+        <div class="time"><span>{{tijd}}</span></div>
       </div>
     </div>
   </template>
@@ -79,11 +82,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             observer: "_changeplaying"
           },
           unixtime: {
-            type: Number,
             observer: "_unixtime"
           },
           nickname: {
-            type: String
+            type: String,
+            value: "anonymous"
           }
 
         },
@@ -104,7 +107,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         _unixtime: function(){
-
+          console.log(Date.parse(this.unixtime)/1000);
+          this.tijd = moment(this.unixtime).locale('nl').fromNow();
         },
 
         _changeplaying: function() {

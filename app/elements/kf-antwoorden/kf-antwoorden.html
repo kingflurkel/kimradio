@@ -16,12 +16,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
+
+      .streep {
+        border-bottom: 1px solid lightgrey;
+      }
+
+      paper-material {
+        padding: 20px;
+      }
     </style>
-    <div class="horizontal layout">
+    <paper-material elevation="1">
+    <div class="vertical layout">
     <template is="dom-repeat" items="{{antwoorden}}">
+    <div class="horizontal layout streep">
     <kf-player data="{{item.data.data}}" nickname="{{item.data.nickname}}" unixtime="{{item.data.datetime}}" key="" user=""></kf-player>
+  </div>
      </template>
     </div>
+  </paper-material>
   </template>
   <script>
   (function() {
@@ -62,7 +74,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //console.log(newarray);
         }
       };
-      return newarray;
+      return newarray.reverse();
       console.log("object2array: ",newarray);
     },
 

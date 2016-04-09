@@ -62,79 +62,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved class="fullbleed layout vertical">
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
-
-    <paper-drawer-panel id="paperDrawerPanel">
-      <!-- Drawer Scroll Header Panel -->
-      <paper-scroll-header-panel drawer fixed>
-
-        <!-- Drawer Toolbar -->
-        <paper-toolbar id="drawerToolbar">
-          <span class="paper-font-title">Menu</span>
-        </paper-toolbar>
-
-        <!-- Drawer Content -->
-        <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
-          <a data-route="home" href="/" on-click="onDataRouteClick">
-            <iron-icon icon="home"></iron-icon>
-            <span>Home</span>
-          </a>
-
-          <a data-route="users" href="/users" on-click="onDataRouteClick">
-            <iron-icon icon="info"></iron-icon>
-            <span>All messages</span>
-          </a>
-
-          <a data-route="contact" href="/contact" on-click="onDataRouteClick">
-            <iron-icon icon="mail"></iron-icon>
-            <span>Contact</span>
-          </a>
-        </paper-menu>
-      </paper-scroll-header-panel>
+ 
+  <paper-drawer-panel force-narrow>
+    <paper-header-panel drawer>
+      <paper-toolbar>Menu</paper-toolbar>
+      
+    </paper-header-panel>
+    
 
       <!-- Main Area -->
-      <paper-scroll-header-panel main condenses keep-condensed-header>
+      <paper-header-panel main condenses keep-condensed-header>
 
         <!-- Main Toolbar -->
-        <paper-toolbar id="mainToolbar" class="tall">
-          <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
-          <span class="flex"></span>
-
-          <!-- Toolbar icons -->
-          <paper-icon-button icon="refresh"></paper-icon-button>
-          <paper-icon-button icon="search"></paper-icon-button>
-
+        <paper-toolbar id="mainToolbar" class="tall fixed">
           <!-- Application name -->
-          <div class="middle middle-container center horizontal layout">
-            <div class="app-name">Happy Kim-day!</div>
+          <div class="middle middle-container center flex horizontal layout">
+                             <kf-audiorecorder hashtag="{{params.hashtag}}" tag="antwoord" key="kimbe" nickname="{{params.nickname}}" rec="{{playing}}"></kf-audiorecorder>  
           </div>
 
-          <!-- Application sub title -->
-          <div class="bottom bottom-container center horizontal layout">
-            <div class="bottom-title paper-font-subhead">Leave your message for Kim</div>
-          </div>
-
-        </paper-toolbar>
+      </paper-toolbar>
 
         <!-- Main Content -->
         <div class="content">
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
 
             <section data-route="home">
-              <paper-material elevation="1">
-               <kf-audiorecorder tag="antwoord" key="kimbe" rec="{{playing}}"></kf-audiorecorder>  
-              </paper-material>
-              <paper-material elevation="1">
-                
-               <kf-mijnvragen aantalvragen="{{aantalmijnvragen}}"></kf-mijnvragen>
+             
+              
+               <kf-antwoorden key="{{params.hashtag}}"></kf-antwoorden> 
+               <!-- <kf-mijnvragen aantalvragen="{{aantalmijnvragen}}"></kf-mijnvragen> -->
 
-              </paper-material>
+             
               
 
             </section>
 
             <section data-route="users">
               <paper-material elevation="1">
-                <kf-antwoorden key="kimbe"></kf-antwoorden>
+                
               </paper-material>
             </section>
 
@@ -156,8 +121,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           </iron-pages>
         </div>
-      </paper-scroll-header-panel>
-    </paper-drawer-panel>
+      </paper-header-panel>
+ </paper-drawer-panel>
 
     <!-- Uncomment next block to enable Service Worker support (1/2) -->
     <!--

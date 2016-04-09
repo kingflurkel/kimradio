@@ -32,15 +32,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
            background-color: var(--paper-red-500);
       }
 
+      paper-input {
+        max-width: 200px;
+      }
+
+      h1 {
+        font-weight: lighter;
+      }
+
     </style>
     <iron-localstorage name="kim-id" value="{{userid}}"
         on-iron-localstorage-load-empty="createuser"></iron-localstorage>
-        <iron-localstorage name="kim-nick" value="{{nickname}}"
-        on-iron-localstorage-load-empty="createuser"></iron-localstorage>
+        <iron-localstorage name="kim-nick" value="{{nickname}}"></iron-localstorage>
     <div class="horizontal layout center-center">
-      <paper-fab toggles active="{{recording}}" id="recbutt" disabled="{{rec}}" icon="{{fabicon}}" class="big" title="heart"></paper-fab>
+      <div class="vertical layout center">
+        <paper-fab toggles active="{{recording}}" id="recbutt" disabled="{{rec}}" icon="{{fabicon}}" class="big" title="heart"></paper-fab>
+        <h1>#<span>{{hashtag}}</span></h1>
+      </div>
     </div>
-    <div>
+    <div class="horizontal layout center-center">
       <paper-input placeholder="Anonymous" label="Your name" value="{{nickname}}" bind-value="{{nickname}}"></paper-input>
     </div>
   </template>
@@ -73,6 +83,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           observer: "_recording",
           value: false
+        },
+        hashtag: {
+          type: String
+        },
+        nickname: {
+          type: String,
+          value: 'anonymous'
         }
       },
 
@@ -164,7 +181,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log("BLOB!!!", mp3blob, self.tag);
             // en hie gomme na firebase
             if(self.tag=="antwoord"){
-              var location = "vraag/"+self.key+"/antwoorden";
+              var location = "vraag/"+self.hashtag+"/antwoorden";
             } 
             if(self.tag=="original"){
               var location = "vraag/";
@@ -173,7 +190,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             //console.log(firebase);
             self.newref = firebase.push({
               data: mp3blob,
-              key: self.key,
+              key: self.hashtag,
               userid: self.userid,
               datetime: Date.now(),
               nickname: self.nickname
