@@ -14,12 +14,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../bower_components/node-uuid/uuid.js"></script>
   <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 
 <dom-module id="kf-audiorecorder">
   <template>
     <style>
       :host {
         display: block;
+        width: 100%;
       }
 
       paper-fab {
@@ -33,11 +35,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <iron-localstorage name="kim-id" value="{{userid}}"
         on-iron-localstorage-load-empty="createuser"></iron-localstorage>
-    <div class="horizontal layout center">
+        <iron-localstorage name="kim-nick" value="{{nickname}}"
+        on-iron-localstorage-load-empty="createuser"></iron-localstorage>
+    <div class="horizontal layout center-center">
       <paper-fab toggles active="{{recording}}" id="recbutt" disabled="{{rec}}" icon="{{fabicon}}" class="big" title="heart"></paper-fab>
     </div>
     <div>
-      <paper-input placeholder="Anonymous" label="Your name" bind-value="nickname"></paper-input>
+      <paper-input placeholder="Anonymous" label="Your name" value="{{nickname}}" bind-value="{{nickname}}"></paper-input>
     </div>
   </template>
   <script>

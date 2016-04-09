@@ -19,7 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <div class="horizontal layout">
     <template is="dom-repeat" items="{{antwoorden}}">
-    <kf-player data="{{item.data.data}}" key="" user=""></kf-player>
+    <kf-player data="{{item.data.data}}" nickname="{{item.data.nickname}}" unixtime="{{item.data.datetime}}" key="" user=""></kf-player>
      </template>
     </div>
   </template>

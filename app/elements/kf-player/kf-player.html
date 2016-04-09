@@ -15,11 +15,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
-        margin: 10px;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .rightmargin {
+        margin-right: 20px;
+      }
+
+      .nickname {
+        font-size: 20px;
+        text-transform: uppercase;
+      }
+
+      .time {
+        color: grey;
+      }
+
+      paper-fab {
+            --paper-fab-background: var(--paper-grey-500);
+      }
+
+      .green {
+           background-color: var(--paper-green-500);
       }
     </style>
-    <audio id="player2" src="{{data}}"></audio>
-    <paper-fab on-tap="_play" id="playbtn" icon="{{playericon}}"></paper-fab>
+    <div class="horizontal layout">
+      <div class="rightmargin">
+        <audio id="player2" src="{{data}}"></audio>
+        <paper-fab on-tap="_play" class="" id="playbtn" icon="{{playericon}}"></paper-fab>
+      </div>
+      <div class="vertical layout">
+        <div class="time"><span>{{unixtime}}</span></div>
+        <div class="nickname"><span>{{nickname}}</span></div>
+      </div>
+    </div>
   </template>
   <script>
     (function() {
@@ -73,11 +103,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           };
         },
 
+        _unixtime: function(){
+
+        },
+
         _changeplaying: function() {
           if (this.playing) {
             this.playericon = "av:pause";
+            this.$.playbtn.toggleClass("green", true);
           } else {
             this.playericon = "av:play-arrow";
+            this.$.playbtn.toggleClass("green", false);
           }
         },
 

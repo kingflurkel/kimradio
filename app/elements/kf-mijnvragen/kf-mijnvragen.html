@@ -18,13 +18,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
       .streep {
-        border-bottom: 1px solid blue;
+        border-bottom: 1px solid grey;
       }
     </style>
     <iron-localstorage name="kim-id" value="{{userid}}"></iron-localstorage>
     <template is="dom-repeat" items="{{mijnvragen}}">
-    <div class="horizontal layout">
-    <kf-player data="{{item.data.data}}" key="" user=""></kf-player>
+    <div class="horizontal layout streep">
+    <kf-player data="{{item.data.data}}" nickname="{{item.data.nickname}}" unixtime="{{item.data.datetime}}" key="" user=""></kf-player>
     <kf-antwoorden key="{{item.data.key}}"></kf-antwoorden>
   </div>
     </template>
