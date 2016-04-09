@@ -47,7 +47,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
             value: false,
             observer: "_changeplaying"
+          },
+          unixtime: {
+            type: Number,
+            observer: "_unixtime"
+          },
+          nickname: {
+            type: String
           }
+
         },
 
         ready: function() {

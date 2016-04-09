@@ -33,8 +33,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <iron-localstorage name="kim-id" value="{{userid}}"
         on-iron-localstorage-load-empty="createuser"></iron-localstorage>
-    <div>
+    <div class="horizontal layout center">
       <paper-fab toggles active="{{recording}}" id="recbutt" disabled="{{rec}}" icon="{{fabicon}}" class="big" title="heart"></paper-fab>
+    </div>
+    <div>
+      <paper-input placeholder="Anonymous" label="Your name" bind-value="nickname"></paper-input>
     </div>
   </template>
   <script>
@@ -168,7 +171,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               data: mp3blob,
               key: self.key,
               userid: self.userid,
-              datetime: Date.now()
+              datetime: Date.now(),
+              nickname: self.nickname
             });
 
         
@@ -177,7 +181,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             fbuser.push({
               data: mp3blob,
               key: self.newref.key(),
-              datetime: Date.now()
+              datetime: Date.now(),
+              nickname: self.nickname
             }, function(e, f) {
               console.log(e, f);
             });
