@@ -25,10 +25,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 20px;
       }
     </style>
-    <paper-material elevation="1">
-    <div class="vertical layout">
+    <paper-material elevation="0">
+    <div class="vertical  layout">
     <template is="dom-repeat" items="{{antwoorden}}">
-    <div class="horizontal layout streep">
+    <div class="horizontal  layout streep">
     <kf-player data="{{item.data.data}}" nickname="{{item.data.nickname}}" unixtime="{{item.data.datetime}}" key="" user=""></kf-player>
   </div>
      </template>

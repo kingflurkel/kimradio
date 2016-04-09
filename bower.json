@@ -13,9 +13,9 @@
     "mic-visualize": "DmitryAuine/Polymer-audio-elements",
     "uuid": "~2.0.1",
     "node-uuid": "~1.4.7",
-    "webaudio-analyzer": "~0.0.1",    
-    "moment": "momentjs#~2.12.0"
-
+    "webaudio-analyzer": "~0.0.1",
+    "moment": "momentjs#~2.12.0",
+    "ipfs-upload": "^0.0.10"
   },
   "devDependencies": {},
   "resolutions": {

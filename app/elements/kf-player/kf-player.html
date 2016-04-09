@@ -36,19 +36,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       paper-fab {
-            --paper-fab-background: var(--paper-grey-500);
+            --paper-fab-background: var(--paper-grey-400);
       }
 
       .green {
            background-color: var(--paper-green-500);
       }
     </style>
-    <div class="horizontal layout">
+    <div class="horizontal middle center layout">
       <div class="rightmargin">
         <audio id="player2" src="{{data}}"></audio>
         <paper-fab on-tap="_play" class="" id="playbtn" icon="{{playericon}}"></paper-fab>
       </div>
-      <div class="vertical layout center-vertical ">
+      <div class="vertical layout">
         <div class="nickname"><span>{{nickname}}</span></div>
         <div class="time"><span>{{tijd}}</span></div>
       </div>

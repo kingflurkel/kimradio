@@ -71,14 +71,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     
 
       <!-- Main Area -->
-      <paper-header-panel main condenses keep-condensed-header>
+      <paper-header-panel id="mainPanel" main condenses keep-condensed-header>
 
         <!-- Main Toolbar -->
         <paper-toolbar id="mainToolbar" class="tall fixed">
           <!-- Application name -->
-          <div class="middle middle-container center flex horizontal layout">
-                             <kf-audiorecorder hashtag="{{params.hashtag}}" tag="antwoord" key="kimbe" nickname="{{params.nickname}}" rec="{{playing}}"></kf-audiorecorder>  
-          </div>
+          <div class="horizontal layout middle center flex">
+             <kf-audiorecorder hashtag="{{params.hashtag}}" tag="antwoord" key="kimbe" nickname="{{params.nickname}}" on-rec-end="changebg" rec="{{playing}}"></kf-audiorecorder> 
+           </div>
 
       </paper-toolbar>
 

@@ -14,18 +14,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../bower_components/node-uuid/uuid.js"></script>
   <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/image-icons.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/ipfs-upload/ipfs-upload.html">
+
 
 <dom-module id="kf-audiorecorder">
   <template>
+
     <style>
       :host {
         display: block;
         width: 100%;
       }
 
+      
+
       paper-fab {
-            --paper-fab-background: var(--paper-grey-500);
+        --paper-fab-background: var(--paper-grey-500);
+        margin-right: 20px;
       }
 
       .red {
@@ -38,21 +45,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       h1 {
         font-weight: lighter;
+        text-shadow: 0px 0px 5px #000; 
       }
 
+
     </style>
+
     <iron-localstorage name="kim-id" value="{{userid}}"
         on-iron-localstorage-load-empty="createuser"></iron-localstorage>
-        <iron-localstorage name="kim-nick" value="{{nickname}}"></iron-localstorage>
-    <div class="horizontal layout center-center">
-      <div class="vertical layout center">
-        <paper-fab toggles active="{{recording}}" id="recbutt" disabled="{{rec}}" icon="{{fabicon}}" class="big" title="heart"></paper-fab>
-        <h1>#<span>{{hashtag}}</span></h1>
-      </div>
+    <iron-localstorage name="kim-nick" value="{{nickname}}"></iron-localstorage>
+    <ipfs-upload hidefileinput id="ipfsupload" host="/ip4/109.123.70.141/tcp/5001" hash="{{hashupl}}" ipfs="{{ipfs}}"></ipfs-upload>
+
+    <div class="horizontal layout center middle center">
+    <div>
+      <paper-fab toggles active="{{recording}}" id="recbutt" disabled="{{rec}}" icon="{{fabicon}}" class="big" title="heart"></paper-fab></div>
+      <div class="flex"> <h1>#<span>{{hashtag}}</span></h1></div>
+      <div> <iron-icon on-tap="_upload" icon="image:photo-size-select-actual"></iron-icon></div>
     </div>
-    <div class="horizontal layout center-center">
-      <paper-input placeholder="Anonymous" label="Your name" value="{{nickname}}" bind-value="{{nickname}}"></paper-input>
-    </div>
+
+
+       
+
+    
   </template>
   <script>
   (function() {
@@ -85,16 +99,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: false
         },
         hashtag: {
-          type: String
+          type: String,
+          observer: "_hashtag"
         },
         nickname: {
           type: String,
           value: 'anonymous'
+        },
+        hashimg: {
+          type: String,
+          observer: '_hashimg'
+        },
+        hashupl: {
+          type: String,
+          observer: '_hashupl'
         }
       },
 
       _keyChanged: function() {
-        console.log("Changed key ", this.key, "tag: ", this.tag);
+        console.log("Changed key ", this.key);
+      },
+
+      _upload: function(){
+        this.$.ipfsupload._tap();
+      },
+
+      _hashtag: function(){
+        var fbhash = new Firebase("https://dagboeka.firebaseio.com/hashimages/" + this.hashtag + "/image");
+          fbhash.on("value", function(snap){
+          console.log("Found hash", snap.val());
+          var toolbar = document.getElementById('mainToolbar');
+          var bgurl = "url('http://gateway.ipfs.io/ipfs/" + snap.val().hash + "')";
+          console.log(bgurl);
+          toolbar.style.backgroundImage = bgurl;
+          //self.mijnvragen = self.object2array(snap.val());
+        });
+      },
+
+      _hashupl: function(){
+        console.log(this.hashupl);
+        var fbhashimg = new Firebase("https://dagboeka.firebaseio.com/hashimages/" + this.hashtag);
+        fbhashimg.set({'image': this.hashupl});
       },
 
       _rec: function(){
@@ -276,9 +321,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if(this.recording){
           this.record();
           this.fabicon = "av:stop";
+          var toolbar = document.getElementById('mainToolbar');
+          toolbar.style.backgroundImage = "url('/images/recording.jpg')";
         } else {
           this.stoprec();
           this.fabicon = "av:fiber-manual-record";
+          var toolbar = document.getElementById('mainToolbar');
+          toolbar.style.backgroundImage = "url('/images/kim.jpg')";
         }
       }
       },

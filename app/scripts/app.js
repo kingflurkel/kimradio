@@ -52,4 +52,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     document.getElementById('mainContainer').scrollTop = 0;
   };
 
+  app.changebg = function(){
+    console.log('rec end');
+
+  };
+
 })(document);

@@ -22,8 +22,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   /* Application theme */
 
   :root {
-    --dark-primary-color: #303F9F;
-    --default-primary-color: #3F51B5;
+    --dark-primary-color: #333;
+    --default-primary-color: #333;
     --light-primary-color: #C5CAE9;
     --text-primary-color: #ffffff; /*text/icons*/
     --accent-color: #FF4081;
@@ -32,6 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     --secondary-text-color: #727272;
     --disabled-text-color: #bdbdbd;
     --divider-color: #B6B6B6;
+
 
     /* Components */
 
@@ -43,11 +44,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     /* paper-menu */
     --paper-menu-background-color: #fff;
     --menu-link-color: #111111;
-    --paper-toolbar-height: 120px;
+    --paper-toolbar-height: 90px;
 
   }
 
   /* General styles */
+
+
 
   #drawerToolbar {
     color: var(--secondary-text-color);
@@ -58,6 +61,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   paper-scroll-header-panel {
     height: 100%;
   }
+
+  #mainToolbar {
+    background-color: black;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  }
+
+
 
   paper-material {
     border-radius: 2px;
@@ -103,15 +116,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     font-size: 40px;
     font-weight: 300;
     /* Required for main area's paper-scroll-header-panel custom condensing transformation */
-    -webkit-transform-origin: left center;
-    transform-origin: left center;
+
     --paper-toolbar-height
 
   }
 
   #mainToolbar .middle-container  {
     height: 100%;
-    margin-left: 48px;
   }
 
   #mainToolbar:not(.tall) .middle {
