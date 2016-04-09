@@ -1,0 +1,91 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="kf-player">
+  <template>
+    <style>
+      :host {
+        display: block;
+        margin: 10px;
+      }
+    </style>
+    <audio id="player2" src="{{data}}"></audio>
+    <paper-fab on-tap="_play" id="playbtn" icon="{{playericon}}"></paper-fab>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'kf-player',
+
+        properties: {
+          data: {
+            type: String,
+            value: '',
+            notify: true
+          },
+          key: {
+            type: String,
+            value: ''
+          },
+          user: {
+            type: String,
+            value: '',
+            notify: true
+          },
+          playing: {
+            type: Boolean,
+            value: false,
+            observer: "_changeplaying"
+          }
+        },
+
+        ready: function() {
+          this.playericon = "av:play-arrow";
+          var self = this;
+          var aud = this.$.player2;
+          aud.canplay = function() {
+            //          self.playericon = "av:play-arrow";
+          };
+          aud.onplay = function() {
+            self.playing = true;
+          };
+          aud.onended = function() {
+            self.playing = false;
+          };
+        },
+
+        _changeplaying: function() {
+          if (this.playing) {
+            this.playericon = "av:pause";
+          } else {
+            this.playericon = "av:play-arrow";
+          }
+        },
+
+        _play: function() {
+          if (this.playing) {
+            this.$.player2.pause();
+            this.playing = false;
+          } else {
+            this.$.player2.play();
+            this.playing = true;
+
+          }
+        }
+
+
+      });
+    })();
+  </script>
+</dom-module>
