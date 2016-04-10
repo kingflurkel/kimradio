@@ -321,13 +321,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if(this.recording){
           this.record();
           this.fabicon = "av:stop";
-          var toolbar = document.getElementById('mainToolbar');
-          toolbar.style.backgroundImage = "url('/images/recording.jpg')";
         } else {
           this.stoprec();
           this.fabicon = "av:fiber-manual-record";
-          var toolbar = document.getElementById('mainToolbar');
-          toolbar.style.backgroundImage = "url('/images/kim.jpg')";
         }
       }
       },
