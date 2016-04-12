@@ -271,8 +271,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //input.connect(audio_context.destination);
           __log('Input connected to audio context destination.');
 
-          self.recorder = new Recorder(input);
-
+          self.recorder = new Recorder(input, {
+            workerPath: "/bower_components/Recorderjs/recorderWorker.js"
+          });
           // self.recorder.exportWAV = function(mp3blob) {
 
           //   self.data = mp3blob;
