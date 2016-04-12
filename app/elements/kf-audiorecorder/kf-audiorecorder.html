@@ -32,11 +32,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       paper-fab {
         --paper-fab-background: var(--paper-grey-500);
-        margin-right: 20px;
+        margin: 10px;
       }
 
       .red {
-           background-color: var(--paper-red-500);
+        background-color: var(--paper-red-500);
+      }
+
+      .green {
+        background-color: var(--paper-green-500);
       }
 
       paper-input {
@@ -46,6 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       h1 {
         font-weight: lighter;
         text-shadow: 0px 0px 5px #000; 
+        margin-left: 20px;
       }
 
 
@@ -56,12 +61,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-localstorage name="kim-nick" value="{{nickname}}"></iron-localstorage>
     <ipfs-upload hidefileinput id="ipfsupload" host="/ip4/109.123.70.141/tcp/5001" hash="{{hashupl}}" ipfs="{{ipfs}}"></ipfs-upload>
 
-    <div class="horizontal layout center middle center">
-    <div>
-      <paper-fab toggles active="{{recording}}" id="recbutt" disabled="{{rec}}" icon="{{fabicon}}" class="big" title="heart"></paper-fab></div>
-      <div class="flex"> <h1>#<span>{{hashtag}}</span></h1></div>
-      <div> <iron-icon on-tap="_upload" icon="image:photo-size-select-actual"></iron-icon></div>
+    <iron-pages selected="{{state}}">
+      <section>
+            <div class="horizontal layout center middle center">
+        <div>
+          <paper-fab toggles active="{{recording}}" id="recbutt" disabled="{{rec}}" icon="{{fabicon}}" class="big" title="heart"></paper-fab></div>
+          <div class="flex"> <h1>#<span>{{hashtag}}</span></h1></div>
+          <div> <iron-icon on-tap="_upload" icon="image:photo-size-select-actual"></iron-icon></div>
+        </div>
+      </section>
+      <section>
+        <div class="horizontal layout center middle center">
+      <paper-fab id="playbtn" on-tap="_play" icon="{{playericon}}"></paper-fab>
+      <span class="flex"></span>
+      <audio id="player2" src="{{data}}"></audio>
+      <paper-fab on-tap="save" icon="icons:check"></paper-fab>
+      <paper-fab on-tap="cancel" icon="icons:clear"></paper-fab>
     </div>
+      </section>
+      <section>
+        
+      </section>
+    </iron-pages>
+
+    
+
+    
 
 
        
@@ -113,7 +138,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         hashupl: {
           type: String,
           observer: '_hashupl'
-        }
+        },
+        playing: {
+            type: Boolean,
+            value: false,
+            observer: "_changeplaying"
+          }
       },
 
       _keyChanged: function() {
@@ -135,6 +165,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //self.mijnvragen = self.object2array(snap.val());
         });
       },
+
+      _changeplaying: function() {
+          if (this.playing) {
+            this.playericon = "av:pause";
+            this.$.playbtn.toggleClass("green", true);
+          } else {
+            this.playericon = "av:play-arrow";
+            this.$.playbtn.toggleClass("green", false);
+          }
+        },
 
       _hashupl: function(){
         console.log(this.hashupl);
@@ -168,7 +208,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       ready: function() { 
 
-        
+        var self = this;
+          var aud = this.$.player2;
+          aud.canplay = function() {
+            //          self.playericon = "av:play-arrow";
+          };
+          aud.onplay = function() {
+            self.playing = true;
+          };
+          aud.onended = function() {
+            self.playing = false;
+          };
+
+        this.state = 0;
 
         function __log(e, data) {
           log.innerHTML += "\n" + e + " " + (data || '');
@@ -223,37 +275,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
 
           self.recorder.mp3encoded = function(mp3blob) {
+
+            self.data = mp3blob;
+            self.state = 1;
             console.log("BLOB!!!", mp3blob, self.tag);
             // en hie gomme na firebase
-            if(self.tag=="antwoord"){
-              var location = "vraag/"+self.hashtag+"/antwoorden";
-            } 
-            if(self.tag=="original"){
-              var location = "vraag/";
-            };
-            var firebase = new Firebase("https://dagboeka.firebaseio.com/" + location);
-            //console.log(firebase);
-            self.newref = firebase.push({
-              data: mp3blob,
-              key: self.hashtag,
-              userid: self.userid,
-              datetime: Date.now(),
-              nickname: self.nickname
-            });
-
-        
-
-            var fbuser = new Firebase("https://dagboeka.firebaseio.com/user/" + self.userid + "/" + self.tag);
-            fbuser.push({
-              data: mp3blob,
-              key: self.newref.key(),
-              datetime: Date.now(),
-              nickname: self.nickname
-            }, function(e, f) {
-              console.log(e, f);
-            });
-
-            self.recorder.clear();
 
           };
           __log('Recorder initialised.');
@@ -301,10 +327,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         };
       },
 
+      save: function(){
+        var self = this;
+        if(self.tag=="antwoord"){
+              var location = "vraag/"+self.hashtag+"/antwoorden";
+            } 
+            if(self.tag=="original"){
+              var location = "vraag/";
+            };
+            var firebase = new Firebase("https://dagboeka.firebaseio.com/" + location);
+            //console.log(firebase);
+            self.newref = firebase.push({
+              data: self.data,
+              key: self.hashtag,
+              userid: self.userid,
+              datetime: Date.now(),
+              nickname: self.nickname
+            });
+
+        
+
+            var fbuser = new Firebase("https://dagboeka.firebaseio.com/user/" + self.userid + "/" + self.tag);
+            fbuser.push({
+              data: self.data,
+              key: self.newref.key(),
+              datetime: Date.now(),
+              nickname: self.nickname
+            }, function(e, f) {
+              console.log(e, f);
+            });
+
+            self.recorder.clear();
+            self.state = 0;
+      },
+
+      cancel: function(){
+        this.recorder.clear();
+            this.state = 0;
+      },
+
       record: function() {
         console.log("Record");
         this.startRecording(this.$.recordbutton);
         this.$.recbutt.toggleClass("red", true);
+        this.$.recbutt.icon = "icons:sav";
       },
 
       stoprec: function() {
@@ -326,6 +392,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
       },
+
+      _play: function() {
+          if (this.playing) {
+            this.$.player2.pause();
+            this.playing = false;
+          } else {
+            this.$.player2.play();
+            this.playing = true;
+
+          }
+        }
 
     });
   })();
