@@ -307,11 +307,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log("create downloadl ink");
 
           self.recorder && self.recorder.exportWAV(function(blob) {
-            console.log("BLOB? ", blob);
-            var url = URL.createObjectURL(blob);
-            console.log(url);
-            
-
+            //console.log("BLOB? ", blob);
+            var reader = new FileReader();
+            reader.addEventListener("loadend", function() {
+            // reader.result contains the contents of blob as a typed array
+            console.log("READER: ", reader.result);
+            });
+            reader.readAsArrayBuffer(blob);
+              // var url = URL.createObjectURL(blob);
+              // console.log(blob);
+              // self.data = blob;
+              // self.state = 1;
           });
         }
 
