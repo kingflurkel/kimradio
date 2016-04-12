@@ -9,7 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<script src="../../scripts/recordmp3.js"></script>
+<script src="../../bower_components/Recorderjs/recorder.js"></script>
 <script src="../../bower_components/firebase/firebase.js"></script>
   <script src="../../bower_components/node-uuid/uuid.js"></script>
   <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
@@ -75,8 +75,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-fab id="playbtn" on-tap="_play" icon="{{playericon}}"></paper-fab>
       <span class="flex"></span>
       <audio id="player2" src="{{data}}"></audio>
-      <paper-fab on-tap="save" icon="icons:check"></paper-fab>
-      <paper-fab on-tap="cancel" icon="icons:clear"></paper-fab>
+      <paper-fab on-tap="save" class="green" icon="icons:check"></paper-fab>
+      <paper-fab on-tap="cancel" class="red" icon="icons:clear"></paper-fab>
     </div>
       </section>
       <section>
@@ -263,6 +263,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         function startUserMedia(stream) {
 
           var input = self.audio_context.createMediaStreamSource(stream);
+
           __log('Media stream created.');
           __log("input sample rate " + input.context.sampleRate);
 
@@ -270,18 +271,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //input.connect(audio_context.destination);
           __log('Input connected to audio context destination.');
 
-          self.recorder = new Recorder(input, {
-            numChannels: 1
-          });
+          self.recorder = new Recorder(input);
 
-          self.recorder.mp3encoded = function(mp3blob) {
+          // self.recorder.exportWAV = function(mp3blob) {
 
-            self.data = mp3blob;
-            self.state = 1;
-            console.log("BLOB!!!", mp3blob, self.tag);
-            // en hie gomme na firebase
+          //   self.data = mp3blob;
+          //   self.state = 1;
+          //   //console.log("BLOB!!!", mp3blob, self.tag);
+          //   // en hie gomme na firebase
 
-          };
+          // };
           __log('Recorder initialised.');
         }
 
@@ -298,26 +297,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //button.previousElementSibling.disabled = false;
           __log('Stopped recording.');
           // create WAV download link using audio data blob
-          createDownloadLink();
+          self.createDownloadLink();
 
           //self.recorder.clear();
         }
 
-        function createDownloadLink(tag) {
-          self.recorder && self.recorder.exportWAV(function(blob) {
-            var url = '';
-            var li = document.createElement('li');
-            var au = document.createElement('audio');
-            var hf = document.createElement('a');
+        this.createDownloadLink = function _createDownloadLink() {
+          console.log("create downloadl ink");
 
-            au.controls = true;
-            au.src = url;
-            hf.href = url;
-            hf.download = new Date().toISOString() + '.wav';
-            hf.innerHTML = hf.download;
-            li.appendChild(au);
-            li.appendChild(hf);
-            //recordingslist.appendChild(li);
+          self.recorder && self.recorder.exportWAV(function(blob) {
+            console.log("BLOB? ", blob);
+            var url = URL.createObjectURL(blob);
+            console.log(url);
+            
 
           });
         }
