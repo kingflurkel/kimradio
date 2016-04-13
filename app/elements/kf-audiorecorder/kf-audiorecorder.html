@@ -304,7 +304,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         this.createDownloadLink = function _createDownloadLink() {
-          console.log("create downloadl ink");
 
           self.recorder && self.recorder.exportWAV(function(blob) {
             //console.log("BLOB? ", blob);
@@ -316,8 +315,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             reader.readAsArrayBuffer(blob);
               // var url = URL.createObjectURL(blob);
               // console.log(blob);
-              // self.data = blob;
-              // self.state = 1;
+              //self.data = blob;
+              self.state = 1;
           });
         }
 
