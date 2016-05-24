@@ -38,7 +38,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // The appName is moved to top and shrunk on condensing. The bottom sub title
   // is shrunk to nothing on condensing.
   
-
   // Close drawer after menu item is selected if drawerPanel is narrow
   app.onDataRouteClick = function() {
     var drawerPanel = document.querySelector('#paperDrawerPanel');
