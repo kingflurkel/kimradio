@@ -1,1 +1,1 @@
-ffmpeg -i test.wav -f s8 -ar 7874 -acodec pcm_s8 test.raw 
+ffmpeg -i test2.wav -f s8 -ar 7874 -acodec pcm_s8 test2.raw 
